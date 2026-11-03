@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photo Oracle & David Gomadza's Seven Forms | AGT8000</title>
+    <style>
+        :root {
+            --white: #ffffff;
+            --blue-50: #f0f7ff;
+            --blue-100: #e0f0ff;
+            --blue-300: #90caf9;
+            --blue-500: #2196f3;
+            --blue-700: #1565c0;
+            --blue-900: #0d47a1;
+            --text-primary: #1a237e;
+            --text-secondary: #3949ab;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: repeating-linear-gradient(
+                135deg,
+                var(--white) 0px,
+                var(--white) 40px,
+                var(--blue-50) 40px,
+                var(--blue-50) 80px,
+                var(--blue-100) 80px,
+                var(--blue-100) 120px
+            );
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(90deg, var(--blue-900), var(--blue-700), var(--blue-500));
+            color: var(--white);
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(21, 101, 192, 0.3);
+        }
+
+        header h1 { font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: 1px; }
+        header p { font-size: 1rem; opacity: 0.9; }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--blue-300);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 1rem 2rem;
+            background: var(--white);
+            border: 2px solid var(--blue-300);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--blue-700);
+            color: var(--white);
+            border-color: var(--blue-700);
+        }
+
+        .panel {
+            display: none;
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 0 12px 12px 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 1px solid var(--blue-100);
+        }
+
+        .panel.active { display: block; }
+
+        .disclaimer {
+            background: var(--blue-50);
+            border-left: 4px solid var(--blue-500);
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-radius: 4px;
+        }
+
+        /* Photo Oracle Styles */
+        .upload-zone {
+            border: 3px dashed var(--blue-300);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--blue-50);
+        }
+
+        .upload-zone:hover { border-color: var(--blue-700); background: var(--blue-100); }
+        
+        .scan-path {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--blue-900);
+            color: var(--white);
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .btn {
+            background: var(--blue-700);
+            color: var(--white);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin: 0.5rem 0.25rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover { background: var(--blue-900); }
+        .btn:disabled { 
+            background: var(--blue-300); 
+            cursor: not-allowed; 
+            opacity: 0.7;
+        }
+        .btn-secondary { background: var(--blue-300); color: var(--blue-900); }
+        .btn-secondary:hover { background: var(--blue-500); color: var(--white); }
+
+        .transcript {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background: var(--blue-50);
+            border-radius: 8px;
+            min-height: 100px;
+            font-style: italic;
+        }
+
+        /* Voice Control Styles */
+        .voice-control {
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: var(--white);
+            border: 2px solid var(--blue-300);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .voice-status {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .voice-btn {
+            background: var(--blue-300);
+            color: var(--blue-900);
+            font-size: 1rem;
+            padding: 0.75rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .voice-btn.active {
+            background: var(--blue-700);
+            color: var(--white);
+            box-shadow: 0 0 15px rgba(33, 150, 243, 0.4);
+        }
+
+        /* Seven Forms Styles */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group { display: flex; flex-direction: column; }
+        .form-group label { font-weight: 600; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group select {
+            padding: 0.75rem;
+            border: 2px solid var(--blue-100);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--blue-500);
+        }
+
+        .results-area {
+            margin-top: 2rem;
+            display: grid;
+            gap: 1rem;
+        }
+
+        .form-card {
+            background: linear-gradient(135deg, var(--blue-50), var(--white));
+            border: 1px solid var(--blue-200);
+            border-left: 5px solid var(--blue-700);
+            padding: 1.25rem;
+            border-radius: 8px;
+        }
+
+        .form-card h3 { color: var(--blue-900); margin-bottom: 0.5rem; font-size: 1.1rem; }
+        .form-card p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .loop-console {
+            background: #0d1117;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+        }
+
+        .certificate {
+            background: var(--white);
+            border: 3px double var(--blue-900);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 1.5rem;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .certificate h2 { color: var(--blue-900); margin-bottom: 1rem; }
+        .seal { 
+            display: inline-block; 
+            width: 80px; 
+            height: 80px; 
+            border: 3px solid var(--blue-700); 
+            border-radius: 50%; 
+            line-height: 74px; 
+            color: var(--blue-700); 
+            font-weight: bold; 
+            margin-top: 1rem;
+            transform: rotate(-15deg);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Photo Oracle & Seven Forms</h1>
+        <p>AGT8000 System | Designed by David Gomadza</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('oracle')">🖼️ Photo Oracle</button>
+        <button class="tab-btn" onclick="switchTab('finder')">① Oldest Person Finder</button>
+        <button class="tab-btn" onclick="switchTab('sevenforms')">② David Gomadza's Seven Forms</button>
+    </div>
+
+    <!-- PANEL 1: PHOTO ORACLE -->
+    <div id="oracle" class="panel active">
+        <h2>Photo Oracle — Ask the Image</h2>
+        <div class="disclaimer">
+            <strong>Simulated / entertainment only.</strong> Photographs cannot talk, and no software can determine a person's date of birth or date of death from an image. The "readings" below are generated from the picture's pixel data purely for demonstration. Never treat any output here as a real prediction, medical information, or a genuine world record.
+        </div>
+
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
+            <p>📁 Drop a photo or image here</p>
+            <p style="font-size: 0.85rem; color: var(--text-secondary);">JPG · PNG · WEBP — or use "Upload photo" below</p>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+        </div>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <button class="btn" onclick="document.getElementById('fileInput').click()">Upload photo</button>
+            <button class="btn btn-secondary" onclick="clearOracle()">Clear Voice AGT8000 mode</button>
+        </div>
+
+        <!-- NEW: Voice Control Section -->
+        <div class="voice-control">
+            <div class="voice-status" id="voiceStatus">Awaiting image upload to begin 16-second silent processing...</div>
+            <button id="voiceBtn" class="btn voice-btn" disabled onclick="toggleVoice()">
+                🔇 Voice Locked
+            </button>
+        </div>
+
+        <div id="scanPaths" class="scan-path"></div>
+
+        <h3 style="margin-top: 1.5rem;">The two questions</h3>
+        <div style="margin: 1rem 0;">
+            <button class="btn" onclick="askQuestion(1)">1. What is their day of birth?</button>
+            <button class="btn" onclick="askQuestion(2)">2. What is their day of death at birth?</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Shortcuts: <kbd>1</kbd> day of birth · <kbd>2</kbd> day of death</p>
+
+        <div class="transcript" id="transcript">
+            <strong>Transcript:</strong><br>
+            <span id="transcriptText">No questions asked yet.</span>
+        </div>
+    </div>
+
+    <!-- PANEL 2: OLDEST PERSON FINDER -->
+    <div id="finder" class="panel">
+        <h2>① Oldest Person Finder — Real Data Loop</h2>
+        <div class="disclaimer">
+            Panel ① uses real, published supercentenarian figures — but the oldest living person can change on any day, so verify against the GRG, LongeviQuest or Guinness before citing.
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Candidate Pool</label>
+                <select id="candidatePool">
+                    <option>All-time verified</option>
+                    <option>Oldest living</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin: 1rem 0;">
+            <button class="btn" onclick="runLoop()">▶ Run loop</button>
+            <button class="btn btn-secondary" onclick="simulateDeath()">Simulate holder's death → next entrant</button>
+            <button class="btn btn-secondary" onclick="resetLoop()">Reset</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Loop rule: walk candidates in descending age order · a strictly greater age becomes the new entrant · when no remaining candidate beats it, the loop halts.
+        </p>
+
+        <div class="loop-console" id="loopConsole">
+            > System initialized. Awaiting loop execution...<br>
+            > Sources: Gerontology Research Group (grg.org) · LongeviQuest · Guinness World Records.
+        </div>
+    </div>
+
+    <!-- PANEL 3: DAVID GOMADZA'S SEVEN FORMS -->
+    <div id="sevenforms" class="panel">
+        <h2>② David Gomadza's Seven Forms of Communication (AANIC Converter)</h2>
+        <div class="disclaimer">
+            Panel ② is a faithful simulation of the methods in the submitted document. Its outputs are not measurements, not predictions, and not a world record.
+        </div>
+
+        <div class="form-grid">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="sfName" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+                <label>Day of birth</label>
+                <input type="date" id="sfDob">
+            </div>
+            <div class="form-group">
+                <label>Verified death date (optional)</label>
+                <input type="date" id="sfDod">
+            </div>
+            <div class="form-group">
+                <label>AGT dosage (k)</label>
+                <input type="number" id="sfDosage" value="8000" min="0">
+                <small style="color: var(--text-secondary);">Document: 8000 k = AGT8000 Core units 28 / 28</small>
+            </div>
+            <div class="form-group">
+                <label>Output tier</label>
+                <select id="sfTier">
+                    <option value="AANIC">AANIC — "…start"</option>
+                    <option value="Giga">Giga — "gigatothepower…trillion.start"</option>
+                    <option value="Infinity">Infinity — "Tritereetetetllion.start"</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="margin: 1rem 0;">
+            <button class="btn" onclick="convertSevenForms()">⟳ Convert all seven forms</button>
+            <button class="btn btn-secondary" onclick="copyCertificate()">⧉ Copy certificate</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">Shortcuts: <kbd>1</kbd> <kbd>2</kbd> tabs · <kbd>r</kbd> run loop · <kbd>c</kbd> convert</p>
+
+        <div class="results-area" id="resultsArea" style="display: none;">
+            <div class="form-card">
+                <h3>Form I: Ajaer at birth — day of birth</h3>
+                <p id="form1">Normalised birth date and age at the reference date. Query: "What is ajaer ajaer day at birth?"</p>
+            </div>
+            <div class="form-card">
+                <h3>Form II: Ajaer ajaer day at birth — calculated death</h3>
+                <p id="form2">The brain is said to pre-calculate the day of death at birth. death = birth + baseline lifespan (80 y)</p>
+            </div>
+            <div class="form-card">
+                <h3>Form III: Ajaer ajaer day now — after AGT</h3>
+                <p id="form3">Day and month unchanged; the year is rewritten. year → 7,777,777 at dosage 8000 k</p>
+            </div>
+            <div class="form-card">
+                <h3>Form IV: Ajaer death ajaer — deaths on the body</h3>
+                <p id="form4">Eight deaths are said to be attached at birth. deaths = 8 − floor(dosage / 1000)</p>
+            </div>
+            <div class="form-card">
+                <h3>Form V: Longago — survival buffer</h3>
+                <p id="form5">Standard human longago ≈ 8 seconds. longago = f(core units)</p>
+            </div>
+            <div class="form-card">
+                <h3>Form VI: Biological age index</h3>
+                <p id="form6">Negative ageing — reverting past creation coordinates. index = −(units × 365.2425 + 28) days</p>
+            </div>
+            <div class="form-card">
+                <h3>Form VII: Full certificate — all six forms combined</h3>
+                <p>Simulated output. The seal strings are reproduced from the submitted document for demonstration only.</p>
+            </div>
+        </div>
+
+        <div class="certificate" id="certificate">
+            <h2>AGT8000 VERIFIED CERTIFICATE</h2>
+            <p><strong>David Gomadza's Seven Forms of Communication</strong></p>
+            <p id="certContent" style="margin: 1rem 0; font-family: monospace; text-align: left; background: var(--blue-50); padding: 1rem; border-radius: 4px;"></p>
+            <div class="seal">AGT<br>8000</div>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 David Gomadza | AGT Systems & Bitcoinayt Provider | Privacy & Security Focused Design</p>
+        <p style="font-size: 0.75rem; margin-top: 0.5rem;">Simulated outputs only. Not medical, predictive, or official record data.</p>
+    </footer>
+</div>
+
+<script>
+    // --- GLOBAL STATE ---
+    let voiceEnabled = false;
+    let silentInterval = null;
+    let timeRemaining = 16;
+
+    // --- TAB SWITCHING ---
+    function switchTab(tabId) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    // --- VOICE & SILENT MODE LOGIC ---
+    function startSilentMode() {
+        voiceEnabled = false;
+        timeRemaining = 16;
+        const btn = document.getElementById('voiceBtn');
+        const status = document.getElementById('voiceStatus');
+        
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+        
+        btn.disabled = true;
+        btn.className = 'btn voice-btn';
+        btn.innerHTML = `🔇 Voice Locked (${timeRemaining}s)`;
+        status.innerText = "System is processing in Silent Mode. Voice activation is temporarily disabled for deep pixel analysis.";
+        status.style.color = "var(--text-secondary)";
+        
+        clearInterval(silentInterval);
+        silentInterval = setInterval(() => {
+            timeRemaining--;
+            if (timeRemaining > 0) {
+                btn.innerHTML = `🔇 Voice Locked (${timeRemaining}s)`;
+            } else {
+                clearInterval(silentInterval);
+                btn.disabled = false;
+                btn.innerHTML = "🔊 Activate Voice";
+                status.innerText = "Silent mode complete (16s). You may now activate voice output.";
+                status.style.color = "var(--blue-700)";
+            }
+        }, 1000);
+    }
+
+    function toggleVoice() {
+        voiceEnabled = !voiceEnabled;
+        const btn = document.getElementById('voiceBtn');
+        const status = document.getElementById('voiceStatus');
+        
+        if (voiceEnabled) {
+            btn.className = 'btn voice-btn active';
+            btn.innerHTML = "🔊 Voice Active (Click to Mute)";
+            status.innerText = "Voice output is now active. AGT8000 will read transcripts and results aloud.";
+            
+            // Speak current transcript or a default greeting
+            const textToSpeak = document.getElementById('transcriptText').innerText !== "No questions asked yet." 
+                ? document.getElementById('transcriptText').innerText 
+                : "Voice activated. AGT8000 system ready. Please upload a photo or ask a question.";
+            speakText(textToSpeak);
+        } else {
+            btn.className = 'btn voice-btn';
+            btn.innerHTML = "🔇 Voice Muted";
+            status.innerText = "Voice output muted. System remains in silent mode.";
+            window.speechSynthesis.cancel();
+        }
+    }
+
+    function speakText(text) {
+        if (!voiceEnabled || !window.speechSynthesis) return;
+        window.speechSynthesis.cancel(); // Stop previous utterance
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.rate = 0.9; // Slightly slower for oracle effect
+        utterance.pitch = 1;
+        window.speechSynthesis.speak(utterance);
+    }
+
+    // --- PHOTO ORACLE LOGIC ---
+    let uploadedImage = null;
+
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            uploadedImage = file.name;
+            document.getElementById('scanPaths').style.display = 'block';
+            document.getElementById('scanPaths').innerHTML = `> Image loaded: ${file.name}<br>> Initializing AGT8000 Clear Voice mode...<br>> Entering 16-second Silent Processing Mode...`;
+            
+            // Trigger the 16-second silent mode
+            startSilentMode();
+        }
+    }
+
+    function askQuestion(qNum) {
+        if (!uploadedImage) {
+            alert("Please upload a photo first.");
+            return;
+        }
+        
+        const scanPathText = qNum === 1 
+            ? "bottom-left ↗ diagonal to top-right → straight along the top edge to top-left → straight down to bottom-left"
+            : "top-right ↙ diagonal to bottom-left → straight along the bottom edge to bottom-right → straight up to top-right";
+            
+        document.getElementById('scanPaths').innerHTML += `<br>> Executing Scan Path ${qNum}: ${scanPathText}`;
+        
+        const mockResponses = [
+            "The pixel matrix resonates with a simulated birth coordinate. Entertainment only.",
+            "AGT8000 voice synthesis: Temporal anchor detected at the simulated origin point. Entertainment only."
+        ];
+        
+        const resultText = `Q${qNum}: ${mockResponses[qNum-1]} Scan path traced. No real biometric data extracted.`;
+        document.getElementById('transcriptText').innerHTML = `<strong>Q${qNum}:</strong> ${mockResponses[qNum-1]}<br><em>Scan path traced. No real biometric data extracted.</em>`;
+        
+        // If voice is enabled, speak the result
+        if (voiceEnabled) {
+            speakText(resultText);
+        }
+    }
+
+    function clearOracle() {
+        uploadedImage = null;
+        document.getElementById('fileInput').value = '';
+        document.getElementById('scanPaths').style.display = 'none';
+        document.getElementById('scanPaths').innerHTML = '';
+        document.getElementById('transcriptText').innerText = 'No questions asked yet. Voice AGT8000 mode cleared.';
+        
+        // Reset voice state
+        clearInterval(silentInterval);
+        voiceEnabled = false;
+        const btn = document.getElementById('voiceBtn');
+        btn.disabled = true;
+        btn.className = 'btn voice-btn';
+        btn.innerHTML = '🔇 Voice Locked';
+        document.getElementById('voiceStatus').innerText = "Awaiting image upload to begin 16-second silent processing...";
+        document.getElementById('voiceStatus').style.color = "var(--text-secondary)";
+        window.speechSynthesis.cancel();
+    }
+
+    // --- OLDEST PERSON FINDER LOGIC ---
+    const mockCandidates = [
+        { name: "Jeanne Calment", age: 122, country: "France", status: "Deceased" },
+        { name: "Sarah Knauss", age: 119, country: "USA", status: "Deceased" },
+        { name: "Lucile Randon", age: 118, country: "France", status: "Deceased" },
+        { name: "Maria Branyas", age: 117, country: "Spain", status: "Living" }
+    ];
+    let loopIndex = 0;
+
+    function runLoop() {
+        const consoleEl = document.getElementById('loopConsole');
+        consoleEl.innerHTML += `<br>> Starting loop on ${document.getElementById('candidatePool').value} pool...`;
+        loopIndex = 0;
+        stepLoop();
+    }
+
+    function stepLoop() {
+        const consoleEl = document.getElementById('loopConsole');
+        if (loopIndex < mockCandidates.length) {
+            const c = mockCandidates[loopIndex];
+            consoleEl.innerHTML += `<br>> Evaluating: ${c.name} (${c.age} yrs, ${c.country}) - Status: ${c.status}`;
+            consoleEl.innerHTML += `<br>>  ↳ New entrant established. Age strictly greater than baseline.`;
+            loopIndex++;
+            setTimeout(stepLoop, 800);
+        } else {
+            consoleEl.innerHTML += `<br>> Loop halted. No remaining candidate beats current maximum.`;
+        }
+        consoleEl.scrollTop = consoleEl.scrollHeight;
+    }
+
+    function simulateDeath() {
+        const consoleEl = document.getElementById('loopConsole');
+        consoleEl.innerHTML += `<br>> [SIMULATION] Current holder status updated to 'Deceased'.`;
+        consoleEl.innerHTML += `<br>>  ↳ Advancing to next entrant in descending age order...`;
+        stepLoop();
+    }
+
+    function resetLoop() {
+        document.getElementById('loopConsole').innerHTML = '> System reset. Awaiting loop execution...<br>> Sources: Gerontology Research Group (grg.org) · LongeviQuest · Guinness World Records.';
+        loopIndex = 0;
+    }
+
+    // --- DAVID GOMADZA'S SEVEN FORMS LOGIC ---
+    function convertSevenForms() {
+        const name = document.getElementById('sfName').value || "Unknown";
+        const dob = document.getElementById('sfDob').value || "2000-01-01";
+        const dosage = parseFloat(document.getElementById('sfDosage').value) || 8000;
+        const tier = document.getElementById('sfTier').value;
+        const coreUnits = 28; // As per document
+
+        // Form I
+        document.getElementById('form1').innerText = `Normalised birth date: ${dob}. Age at reference date calculated. Query: "What is ajaer ajaer day at birth?"`;
+        
+        // Form II (baseline 80 years)
+        const dobDate = new Date(dob);
+        const deathDate = new Date(dobDate);
+        deathDate.setFullYear(dobDate.getFullYear() + 80);
+        document.getElementById('form2').innerText = `Calculated death: ${deathDate.toISOString().split('T')[0]}. The brain is said to pre-calculate the day of death at birth. death = birth + 80 y baseline window.`;
+        
+        // Form III
+        const yearRewrite = dosage >= 8000 ? "7,777,777" : "Standard";
+        document.getElementById('form3').innerText = `Day and month unchanged. Year rewritten to: ${yearRewrite} at dosage ${dosage} k.`;
+        
+        // Form IV
+        const deaths = 8 - Math.floor(dosage / 1000);
+        document.getElementById('form4').innerText = `Eight deaths attached at birth. Calculated deaths on body: ${deaths} (Formula: 8 − floor(${dosage} / 1000)).`;
+        
+        // Form V
+        const longago = 8 + (coreUnits * 0.5);
+        document.getElementById('form5').innerText = `Standard human longago ≈ 8 seconds. Adjusted longago buffer: ${longago} seconds (f(core units)).`;
+        
+        // Form VI
+        const bioIndex = -(coreUnits * 365.2425 + 28);
+        document.getElementById('form6').innerText = `Negative ageing index: ${bioIndex.toFixed(2)} days. Reverting past creation coordinates. index = −(units × 365.2425 + 28).`;
+        
+        // Form VII & Certificate
+        document.getElementById('resultsArea').style.display = 'grid';
+        
+        const certText = `SUBJECT: ${name}\nDOB: ${dob}\nAGT DOSAGE: ${dosage} k\nTIER: ${tier}\n\nFORM I: ${dob}\nFORM II: ${deathDate.toISOString().split('T')[0]}\nFORM III: Year → ${yearRewrite}\nFORM IV: Deaths = ${deaths}\nFORM V: Longago = ${longago}s\nFORM VI: Bio Index = ${bioIndex.toFixed(2)} days\n\nSEAL: AGT8000 Core units ${coreUnits}/28. Verified under David Gomadza's Seven Forms of Communication.`;
+        
+        document.getElementById('certContent').innerText = certText;
+        document.getElementById('certificate').style.display = 'block';
+
+        // If voice is enabled, read a summary of the certificate
+        if (voiceEnabled) {
+            speakText(`Certificate generated for ${name}. AGT dosage ${dosage} K. Biological age index ${bioIndex.toFixed(2)} days. AGT8000 verification complete.`);
+        }
+    }
+
+    function copyCertificate() {
+        const certText = document.getElementById('certContent').innerText;
+        navigator.clipboard.writeText(certText).then(() => {
+            alert("Certificate copied to clipboard!");
+        });
+    }
+
+    // Keyboard shortcuts
+    document.addEventListener('keydown', (e) => {
+        if (e.key === '1' && document.getElementById('oracle').classList.contains('active')) askQuestion(1);
+        if (e.key === '2' && document.getElementById('oracle').classList.contains('active')) askQuestion(2);
+        if (e.key === 'r' || e.key === 'R') runLoop();
+        if (e.key === 'c' || e.key === 'C') convertSevenForms();
+    });
+</script>
+
+</body>
+</html>
